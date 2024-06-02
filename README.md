@@ -57,3 +57,9 @@ operativas, y promover una comprensión mutua de los desafíos y objetivos
 comunes. A través de estos esfuerzos, se espera que la empresa no solo
 resuelva los problemas actuales, sino que también mejore su capacidad
 para adaptarse y prosperar en el futuro.
+
+## Estrategia de ramas (Gitflow)
+
+<p style="text-align: center;">
+  <img src="Diagrama de flujo.png" alt="Descripción de la imagen">
+</p>
