@@ -1,5 +1,5 @@
 <p style="text-align: center;">
-  <img src="logoOrt.jpg" alt="Descripción de la imagen">
+  <img src="logoOrt.jpg" alt="Logo">
 </p>
 
 <center>
@@ -61,5 +61,5 @@ para adaptarse y prosperar en el futuro.
 ## Estrategia de ramas (Gitflow)
 
 <p style="text-align: center;">
-  <img src="Diagrama de flujo.png" alt="Descripción de la imagen">
+  <img src="Diagrama de flujo.png" alt="Diagrama de flujo">
 </p>
