@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "frontend_bucket" {
   count  = 3
-  bucket = ["dev-github-fewebapp", "stg-github-fewebapp", "github-fewebapp"][count.index]
+  bucket = ["dev-vue-app", "stg-vue-app", "prd-vue-app"][count.index]
 
   tags = {
-    Name = ["dev-github-fewebapp", "stg-github-fewebapp", "github-fewebapp"][count.index]
+    Name = ["dev-vue-app", "stg-vue-app", "prd-vue-app"][count.index]
   }
 
   lifecycle_rule {
