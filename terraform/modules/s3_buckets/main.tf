@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "frontend_bucket" {
   count  = 3
-  bucket = ["dev-vue-app", "stg-vue-app", "prd-vue-app"][count.index]
+  bucket = ["dev-vue-app1", "stg-vue-app1", "prd-vue-app1"][count.index]
 
   tags = {
-    Name = ["dev-vue-app", "stg-vue-app", "prd-vue-app"][count.index]
+    Name = ["dev-vue-app1", "stg-vue-app1", "prd-vue-app1"][count.index]
   }
 
   lifecycle_rule {
@@ -14,7 +14,6 @@ resource "aws_s3_bucket" "frontend_bucket" {
 resource "aws_s3_bucket_ownership_controls" "frontend_bucket" {
   count  = 3
   bucket = aws_s3_bucket.frontend_bucket[count.index].id
-
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -52,4 +51,22 @@ resource "aws_s3_bucket_website_configuration" "frontend_bucket_website" {
   error_document {
     key = "error.html"
   }
+}
+
+resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
+  count = 3
+  bucket = aws_s3_bucket.frontend_bucket[count.index].id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid = "PublicReadGetObject",
+        Effect = "Allow",
+        Principal = "*",
+        Action = "s3:GetObject",
+        Resource = format("arn:aws:s3:::%s/*", aws_s3_bucket.frontend_bucket[count.index].id)
+      }
+    ]
+  })
 }
