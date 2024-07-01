@@ -1,5 +1,5 @@
 <p style="text-align: center;">
-  <img src="logoOrt.jpg" alt="Logo">
+  <img src="Extras/Imagenes/Logos/logoOrt.jpg" alt="Logo">
 </p>
 
 <center>
@@ -58,8 +58,22 @@ comunes. A través de estos esfuerzos, se espera que la empresa no solo
 resuelva los problemas actuales, sino que también mejore su capacidad
 para adaptarse y prosperar en el futuro.
 
-## Estrategia de ramas (Gitflow)
+## Estrategia de ramas 
+### Repositorios de Desarrollo (Gitflow)
 
 <p style="text-align: center;">
-  <img src="Diagrama de flujo.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/Diagramas/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
 </p>
+
+EXPLICACION
+
+### Repositorio de DevOps (Trunk Based)
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Diagramas/Diagrama-DevOps.png" alt="Diagrama de flujo">
+</p>
+
+En este repositorio se guarda todo lo relacionado a documentación relvante e infrastructura como codigo e imagenes relacionadas al CI/CD.
+
+Para este repositorio decidimos adoptar el modelo "Trunk Based", debido a la naturaleza de la documentación que se encuentra en constante cambio y favorece la integración continua que trabajamos basandonos en una sola rama "Main". 
+Manejamos "Feature branches" para las distintas partes agregadas de documentación.
