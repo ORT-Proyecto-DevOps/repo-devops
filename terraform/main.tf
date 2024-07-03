@@ -5,6 +5,13 @@
 // yes
 // Siempre al iniciar una sesion nueva de AWS Academy actualizar las crendenciales en ~/.aws/credentials
 
+// terraform plan -target=module.s3_buckets
 module "s3_buckets" {
   source = "./modules/s3_buckets"
+}
+
+
+// terraform plan -target=module.ecr
+module "ecr" {
+  source = "./modules/ecr"
 }
