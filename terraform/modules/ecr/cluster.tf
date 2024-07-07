@@ -59,6 +59,10 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
+data "aws_iam_role" "ecs_task_execution_role" {
+  name = "LabRole"
+}
+
 resource "aws_ecs_task_definition" "ecs_task" {
   family                   = "aws_ecs_be_tasks"
   network_mode             = "awsvpc"
@@ -66,8 +70,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = "256"
   memory                   = "512"
 
-   task_role_arn            = "arn:aws:iam::aws:role/Labrole"
-  execution_role_arn       = "arn:aws:iam::aws:role/Labrole"
+  task_role_arn           = "${data.aws_iam_role.ecs_task_execution_role.arn}"
+  execution_role_arn      = "${data.aws_iam_role.ecs_task_execution_role.arn}"
 
   container_definitions = jsonencode([
     {
