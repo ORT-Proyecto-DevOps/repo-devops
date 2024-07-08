@@ -91,7 +91,7 @@ resource "aws_security_group" "ecs_sg" {
 }
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/aws-ecs-be-services"
-  retention_in_days = 1  # Ajusta la retención según tus necesidades
+  retention_in_days = 1
 
   lifecycle {
     ignore_changes = [
@@ -105,20 +105,26 @@ data "aws_iam_role" "ecs_task_execution_role" {
   name = "LabRole"
 }
 
-resource "aws_ecs_task_definition" "ecs_task" {
-  family                   = "aws_ecs_be_tasks"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+locals {
+  container_names = ["dev", "test", "prod"]
+  service_names   = ["orders-service", "payments-service", "products-service", "shipping-service"]
+}
 
-  task_role_arn           = "${data.aws_iam_role.ecs_task_execution_role.arn}"
-  execution_role_arn      = "${data.aws_iam_role.ecs_task_execution_role.arn}"
+resource "aws_ecs_task_definition" "ecs_task" {
+  count                   = 4
+  family                  = "aws_ecs_be_tasks-${local.service_names[count.index]}"
+  network_mode            = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                     = "256"
+  memory                  = "512"
+
+  task_role_arn           = data.aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn      = data.aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
-      name  = "be-service-1"
-      image = "placeholder"  # Hacer imagen dummy para las tasks, cada task va a tener que tener 3 imagenes por servicio (dev, prod, test) usar count.
+      name  = local.container_names[0]  # Primer contenedor será "dev"
+      image = "hello-world:latest"
       essential = true
       portMappings = [
         {
@@ -134,15 +140,56 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+    },
+    {
+      name  = local.container_names[1]  # Segundo contenedor será "test"
+      image = "hello-world:latest"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 81
+          hostPort      = 81
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/aws-ecs-be-services"
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    },
+    {
+      name  = local.container_names[2]  # Tercer contenedor será "prod"
+      image = "hello-world:latest"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 82
+          hostPort      = 82
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/aws-ecs-be-services"
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  name            = "aws-ecs-be-services"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  count          = 4
+  name           = "aws-ecs-be-services-${count.index}"
+  cluster        = aws_ecs_cluster.ecs_cluster.id
+  desired_count  = 1
+  launch_type    = "FARGATE"
+
+  task_definition = aws_ecs_task_definition.ecs_task[count.index].arn
 
   network_configuration {
     subnets         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
