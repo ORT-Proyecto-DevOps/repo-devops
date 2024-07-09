@@ -1,12 +1,3 @@
-resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "aws-ecs-be-cluster"
-
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
-}
-
 resource "aws_vpc" "ecs_vpc" {
   cidr_block = "10.0.0.0/16"
 
@@ -106,13 +97,24 @@ data "aws_iam_role" "ecs_task_execution_role" {
 }
 
 locals {
-  container_names = ["dev", "test", "prod"]
+  environments    = ["dev", "test", "prod"]
   service_names   = ["orders-service", "payments-service", "products-service", "shipping-service"]
+   task_names = [for env in local.environments : [for svc in local.service_names : "${env}-${svc}"]]
+}
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  count = 3
+  name  = "${element(["aws-ecs-be-dev-cluster", "aws-ecs-be-test-cluster", "aws-ecs-be-prod-cluster"], count.index)}"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                   = 4
-  family                  = "aws_ecs_be_tasks-${local.service_names[count.index]}"
+  count                   = 12 # 4 microservicios x 3 ambientes
+  family                  = "aws_ecs_be_tasks-${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
   network_mode            = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                     = "256"
@@ -123,7 +125,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name  = local.container_names[0]  # Primer contenedor será "dev"
+      name  = "${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
       image = "hello-world:latest"
       essential = true
       portMappings = [
@@ -140,52 +142,14 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
-    },
-    {
-      name  = local.container_names[1]  # Segundo contenedor será "test"
-      image = "hello-world:latest"
-      essential = true
-      portMappings = [
-        {
-          containerPort = 81
-          hostPort      = 81
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = "/ecs/aws-ecs-be-services"
-          "awslogs-region"        = "us-east-1"
-          "awslogs-stream-prefix" = "ecs"
-        }
-      }
-    },
-    {
-      name  = local.container_names[2]  # Tercer contenedor será "prod"
-      image = "hello-world:latest"
-      essential = true
-      portMappings = [
-        {
-          containerPort = 82
-          hostPort      = 82
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = "/ecs/aws-ecs-be-services"
-          "awslogs-region"        = "us-east-1"
-          "awslogs-stream-prefix" = "ecs"
-        }
-      }
     }
   ])
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  count          = 4
-  name           = "aws-ecs-be-services-${count.index}"
-  cluster        = aws_ecs_cluster.ecs_cluster.id
+  count          = 12 # 4 servicios x 3 ambientes
+  name           = "aws-ecs-be-${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
+  cluster        = aws_ecs_cluster.ecs_cluster[floor(count.index / length(local.service_names))].id
   desired_count  = 1
   launch_type    = "FARGATE"
 
