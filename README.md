@@ -65,7 +65,10 @@ para adaptarse y prosperar en el futuro.
   <img src="Extras/Imagenes/Diagramas/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
 </p>
 
-EXPLICACION
+En estos repositorios almacenamos todo lo relacionado al desarrollo de los microservicios, en nuestro caso tenemos 1 repositorio por microservicio de BE (4 en total) y 1 para el aplicativo de FE.
+
+Para estos repositorios decidimos ir por la estrategia "GitFlow", ya que nos permite trabajar en ramas dedicadas para características o correciones en paralelo y podemos mantener multiples ambientes para testeo.
+Mantenemos 3 ramas estables (Main, Staging, Develop) y ramas temporales en caso de que se desarrollen nuevas features o haya posibles bugfixes/hotfixes.
 
 ### Repositorio de DevOps (Trunk Based)
 
@@ -73,7 +76,15 @@ EXPLICACION
   <img src="Extras/Imagenes/Diagramas/Diagrama-DevOps.png" alt="Diagrama de flujo">
 </p>
 
-En este repositorio se guarda todo lo relacionado a documentación relvante e infrastructura como codigo e imagenes relacionadas al CI/CD.
+En este repositorio almacenamos todo lo relacionado a documentación relevante, infrastructura como codigo e imagenes relacionadas al CI/CD.
 
 Para este repositorio decidimos adoptar el modelo "Trunk Based", debido a la naturaleza de la documentación que se encuentra en constante cambio y favorece la integración continua que trabajamos basandonos en una sola rama "Main". 
-Manejamos "Feature branches" para las distintas partes agregadas de documentación.
+Manejamos "Feature branches" para las distintas partes agregadas de documentación e infrastructura como codigo.
+
+## Tablero Kanban
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Kanban.png" alt="Diagrama de flujo">
+</p>
+
+Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tiene el beneficio de ser trabajado con "Issues", los cuales pueden ser vinculados a nuevas ramas temporales. Al finalizar el trabajo en las mismas, se hace un pull request y se espera a la aprobación del otro, esto provoca que el estado del issue asociado a la rama cambie a finalizado.
