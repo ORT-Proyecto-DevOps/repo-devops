@@ -16,8 +16,15 @@ module "ecs" {
   count  = local.is_ecs_workspace ? 1 : 0
 }
 
+module "ecs_dev" {
+  source = "./modules/ecs_dev"
+  count  = local.is_ecs_dev_workspace ? 1 : 0
+}
+
 locals {
-  is_s3_buckets_workspace = terraform.workspace == "s3_buckets_workspace"
-  is_ecr_workspace        = terraform.workspace == "ecr_workspace"
-  is_ecs_workspace        = terraform.workspace == "ecs_workspace"
+  is_s3_buckets_workspace     = terraform.workspace == "s3_buckets_workspace"
+  is_ecr_workspace            = terraform.workspace == "ecr_workspace"
+  is_ecs_workspace            = terraform.workspace == "ecs_workspace"
+  is_ecs_dev_workspace        = terraform.workspace == "ecs_dev_workspace"
+  
 }
