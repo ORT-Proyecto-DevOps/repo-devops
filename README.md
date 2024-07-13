@@ -95,8 +95,11 @@ Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tien
 
 (Todas las herramientas utilizadas tanto BE como FE)
 
-...
-...
+- SonarCloud: Utilizamos sonarcloud porque ...
+- Postman: Utilizamos sonarcloud porque ...
+- Newman: Utilizamos sonarcloud porque ...
+
+
 
 ### Propuesta para microservicios BE
 
@@ -111,29 +114,95 @@ Agregar diagrama CICD
 ...
 
 ## Etapas de CI para BE
-### Analisis en SonarCloud 
-...
-...
+### Analisis en SonarCloud (BE) 
 
-### Analisis de codigo para microservicios 
+A continuación, se presentan los resultados obtenidos durante en análisis de código estático dentro de la rama main, de todos los repositorios que alojan los microservicios. 
 
-...
-...
+> Aclaración: El análisis se realiza dentro de todas las ramas estables de los repositorios, es decir, en las ramas main, staging y develop. Pero a continuación mostraremos únicamente el analisis de la rama main.
+
+#### Requisitos de calidad de código
+
+Para el análisis de calidad de código utilizamos la configuracion que incluye SonarCloud por defecto, se trata de "Sonar Way". 
+
+### Orders service
+
+Para el microservicio "orders", el resultado fue "Failed". Esto quiere decir que no cumple con los requisitos de calidad definidos por SonarCloud. Cuando un análisis falla, puede ser que el código introducido tiene vulnerabilidades críticas de seguridad, malas prácticas de programación, código duplicado en exceso, falta de cobertura de pruebas, entre otros. 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/orders-service1.png" alt="SonarCloud orders service">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/orders-service2.png" alt="SonarCloud orders service">
+</p>
+
+### Payments service
+
+Para el microservicio de "payments", el resultado pasó los estándares de cálidad.
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/payments-service1.png" alt="SonarCloud payments service">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/payments-service2.png" alt="SonarCloud payments service">
+</p>
+
+### Products service
+
+Para el microservicio de "products", el resultado pasó los estándares de cálidad.
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/products-service1.png" alt="SonarCloud products service">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/products-service2.png" alt="SonarCloud products service">
+</p>
+
+### Shipping service
+
+Para el microservicio de "shipping", el resultado pasó los estándares de cálidad.
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
+</p>
 
 ## Testing de microservicios 
 
-...
-...
+Para el testing de los microservicios se utilizaron pruebas de integración con Postman. El fin de estas pruebas es reducir la posibilidad de introducir errores al código, y que todo funcione como se espera. 
+
+Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso correcto de testing para todos los microservicios.
 
 ### Ejemplo de resultados correctos
 
-...
-...
+### Orders service 
 
-### Ejemplo de resultados incorrectos
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-orders-service.png" alt="Testing correcto payments service">
+</p>
 
-...
-...
+### Payments service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-payments-service.png" alt="Testing correcto payments service">
+</p>
+
+### Products service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-products-service.png" alt="Testing correcto payments service">
+</p>
+
+### Shipping service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-shipping-service.png" alt="Testing correcto payments service">
+</p>
 
 ## Etapas de CD para BE
 ### Deploy ECS
@@ -148,13 +217,20 @@ Agregar diagrama CICD
 
 ## Etapas de CI para FE
 ### Analisis en SonarCloud 
-...
-...
+
+Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis de código estático. 
 
 ### Analisis de codigo para la aplicación frontend
 
-...
-...
+Los resultados obtenidos son los siguientes:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-fe/vue-app1.png" alt="SonarCloud aplicación frontend">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
+</p>
 
 ## Etapas de CD para FE
 ### Deploy S3 BUCKETS
