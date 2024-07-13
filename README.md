@@ -81,24 +81,7 @@ En este repositorio almacenamos todo lo relacionado a documentaci처n relevante, 
 Para este repositorio decidimos adoptar el modelo "Trunk Based", debido a la naturaleza de la documentaci처n que se encuentra en constante cambio y favorece la integraci처n continua que trabajamos basandonos en una sola rama "Main". 
 Manejamos "Feature branches" para las distintas partes agregadas de documentaci처n e infrastructura como codigo.
 
-## Proceso de CI/CD  
-
-### Herramientas utilizadas
-
-...
-...
-
-### Propuesta para microservicios BE
-
-...
-...
-
-### Propuesta para aplicaci처n FE
-
-...
-...
-
-### Tablero Kanban
+## Tablero Kanban
 
 <p style="text-align: center;">
   <img src="Extras/Imagenes/Kanban.png" alt="Diagrama de flujo">
@@ -106,7 +89,26 @@ Manejamos "Feature branches" para las distintas partes agregadas de documentaci�
 
 Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tiene el beneficio de ser trabajado con "Issues", los cuales pueden ser vinculados a nuevas ramas temporales. Al finalizar el trabajo en las mismas, se hace un pull request y se espera a la aprobaci처n del otro, esto provoca que el estado del issue asociado a la rama cambie a finalizado.
 
+## Proceso de CI/CD  
 
+### Herramientas utilizadas
+
+(Todas las herramientas utilizadas tanto BE como FE)
+
+...
+...
+
+### Propuesta para microservicios BE
+
+Agregar diagrama CICD
+...
+...
+
+### Propuesta para aplicaci처n FE
+
+Agregar diagrama CICD
+...
+...
 
 ## Etapas de CI para BE
 ### Analisis en SonarCloud 
