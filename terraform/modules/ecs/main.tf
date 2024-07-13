@@ -15,8 +15,8 @@ resource "aws_internet_gateway" "ecs_igw" {
 }
 
 resource "aws_subnet" "public_subnet_1" {
-  vpc_id            = aws_vpc.ecs_vpc.id
-  cidr_block        = "10.0.1.0/24"
+  vpc_id                  = aws_vpc.ecs_vpc.id
+  cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 
   tags = {
@@ -24,10 +24,9 @@ resource "aws_subnet" "public_subnet_1" {
   }
 }
 
-
 resource "aws_subnet" "public_subnet_2" {
-  vpc_id            = aws_vpc.ecs_vpc.id
-  cidr_block        = "10.0.2.0/24"
+  vpc_id                  = aws_vpc.ecs_vpc.id
+  cidr_block              = "10.0.2.0/24"
   map_public_ip_on_launch = true
 
   tags = {
@@ -62,8 +61,8 @@ resource "aws_security_group" "ecs_sg" {
   vpc_id = aws_vpc.ecs_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -80,8 +79,9 @@ resource "aws_security_group" "ecs_sg" {
     Name = "ecs-be-sg"
   }
 }
+
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name              = "/ecs/aws-ecs-be-services"
+  name              = "/ecs/aws-ecs-logs-${var.environment}"
   retention_in_days = 1
 
   lifecycle {
@@ -96,16 +96,8 @@ data "aws_iam_role" "ecs_task_execution_role" {
   name = "LabRole"
 }
 
-locals {
-  environments    = ["dev", "test", "prod"]
-  service_names   = ["orders-service", "payments-service", "products-service", "shipping-service"]
-   task_names = [for env in local.environments : [for svc in local.service_names : "${env}-${svc}"]]
-}
-
 resource "aws_ecs_cluster" "ecs_cluster" {
-  count = 3
-  name  = "${element(["aws-ecs-be-dev-cluster", "aws-ecs-be-test-cluster", "aws-ecs-be-prod-cluster"], count.index)}"
-
+  name = "${var.prefix}-${var.environment}"
   setting {
     name  = "containerInsights"
     value = "enabled"
@@ -113,19 +105,19 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                   = 12 # 4 microservicios x 3 ambientes
-  family                  = "aws_ecs_be_tasks-${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
-  network_mode            = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                     = "256"
-  memory                  = "512"
+  count                     = length(var.task_names)
+  family                    = "${var.prefix}-${var.task_names[count.index]}-${var.environment}"
+  network_mode              = "awsvpc"
+  requires_compatibilities  = ["FARGATE"]
+  cpu                       = "256"
+  memory                    = "512"
 
-  task_role_arn           = data.aws_iam_role.ecs_task_execution_role.arn
-  execution_role_arn      = data.aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn             = data.aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn        = data.aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
-      name  = "${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
+      name  = "${var.task_names[count.index]}"
       image = "hello-world:latest"
       essential = true
       portMappings = [
@@ -137,7 +129,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/aws-ecs-be-services"
+          "awslogs-group"         = "/ecs/aws-ecs-logs-${var.environment}"
           "awslogs-region"        = "us-east-1"
           "awslogs-stream-prefix" = "ecs"
         }
@@ -147,17 +139,15 @@ resource "aws_ecs_task_definition" "ecs_task" {
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  count          = 12 # 4 servicios x 3 ambientes
-  name           = "aws-ecs-be-${local.service_names[count.index % length(local.service_names)]}-${local.environments[floor(count.index / length(local.service_names))]}"
-  cluster        = aws_ecs_cluster.ecs_cluster[floor(count.index / length(local.service_names))].id
-  desired_count  = 1
-  launch_type    = "FARGATE"
-
+  count           = length(var.service_names)
+  name            = "${var.prefix}-${var.service_names[count.index]}-${var.environment}"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.ecs_task[count.index].arn
 
   network_configuration {
-    subnets         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_groups = [aws_security_group.ecs_sg.id]
-    assign_public_ip = true
+    subnets           = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
+    security_groups   = [aws_security_group.ecs_sg.id]
+    assign_public_ip  = true
   }
 }

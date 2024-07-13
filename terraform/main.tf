@@ -10,21 +10,33 @@ module "ecr" {
   count  = local.is_ecr_workspace ? 1 : 0
 }
 
-// es necesario estar en el workspace "ecs_workspace" <- terraform workspace select ecs_workspace
 module "ecs" {
-  source = "./modules/ecs"
-  count  = local.is_ecs_workspace ? 1 : 0
-}
-
-module "ecs_dev" {
-  source = "./modules/ecs_dev"
-  count  = local.is_ecs_dev_workspace ? 1 : 0
+  for_each      = local.current_env
+  source        = "./modules/ecs/"
+  prefix        = local.prefix
+  environment   = each.value.env
+  service_names = local.service_names
+  task_names    = local.task_names
 }
 
 locals {
-  is_s3_buckets_workspace     = terraform.workspace == "s3_buckets_workspace"
-  is_ecr_workspace            = terraform.workspace == "ecr_workspace"
-  is_ecs_workspace            = terraform.workspace == "ecs_workspace"
-  is_ecs_dev_workspace        = terraform.workspace == "ecs_dev_workspace"
-  
+  is_s3_buckets_workspace       = terraform.workspace == "s3_buckets_workspace"
+  is_ecr_workspace              = terraform.workspace == "ecr_workspace"
+
+  prefix        = "aws-ecs"
+  service_names = ["orders-service", "payments-service", "products-service", "shipping-service"]
+  task_names    = ["orders-task", "payments-task", "products-task", "shipping-task"]
+
+  environments = {
+    dev  = { workspace = "ecs_dev_workspace", env = "dev" }
+    stg  = { workspace = "ecs_stg_workspace", env = "stg" }
+    prod = { workspace = "ecs_prod_workspace", env = "prod" }
+    }
+
+   # Determinar qué ambiente está activo basado en el workspace actual
+    current_env = {
+    for key, value in local.environments :
+    key => value
+    if terraform.workspace == value.workspace
+  }
 }
