@@ -84,7 +84,7 @@ Manejamos "Feature branches" para las distintas partes agregadas de documentaci√
 ## Tablero Kanban
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Kanban.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/Kanban/Kanban.png" alt="Diagrama de flujo">
 </p>
 
 Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tiene el beneficio de ser trabajado con "Issues", los cuales pueden ser vinculados a nuevas ramas temporales. Al finalizar el trabajo en las mismas, se hace un pull request y se espera a la aprobaci√≥n del otro, esto provoca que el estado del issue asociado a la rama cambie a finalizado.
