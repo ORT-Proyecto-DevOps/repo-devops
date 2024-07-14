@@ -25,8 +25,8 @@ locals {
   is_ecr_workspace              = terraform.workspace == "ecr_workspace"
 
   prefix        = "aws-ecs"
-  service_names = ["orders-service", "payments-service", "products-service", "shipping-service"]
-  task_names    = ["orders-task", "payments-task", "products-task", "shipping-task"]
+  service_names = ["shipping-service", "payments-service", "products-service", "orders-service"]
+  task_names    = ["shipping-task", "payments-task", "products-task", "orders-task"]
 
   environments = {
     dev  = { workspace = "ecs_dev_workspace", env = "dev" }
