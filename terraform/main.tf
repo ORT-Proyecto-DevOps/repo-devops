@@ -10,6 +10,7 @@ module "ecr" {
   count  = local.is_ecr_workspace ? 1 : 0
 }
 
+// es necesario estar en uno de los workspaces que estan en la variable "environments"
 module "ecs" {
   for_each      = local.current_env
   source        = "./modules/ecs/"
