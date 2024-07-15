@@ -279,7 +279,7 @@ resource "aws_ecs_service" "ecs_service" {
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.ecs_task[count.index].arn
   launch_type     = "FARGATE"
-  desired_count   = 2
+  desired_count   = 1
   deployment_maximum_percent = 200
 
   network_configuration {
