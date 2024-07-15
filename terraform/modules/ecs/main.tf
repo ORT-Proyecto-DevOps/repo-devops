@@ -1,4 +1,3 @@
-# VPC
 resource "aws_vpc" "ecs_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
@@ -9,7 +8,6 @@ resource "aws_vpc" "ecs_vpc" {
   }
 }
 
-# Internet Gateway
 resource "aws_internet_gateway" "ecs_igw" {
   vpc_id = aws_vpc.ecs_vpc.id
 
@@ -18,12 +16,10 @@ resource "aws_internet_gateway" "ecs_igw" {
   }
 }
 
-# Elastic IP for NAT Gateway
 resource "aws_eip" "nat_eip" {
   vpc = true
 }
 
-# Public Subnet for NAT Gateway
 resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = aws_vpc.ecs_vpc.id
   cidr_block              = "10.0.0.0/24"
@@ -35,7 +31,6 @@ resource "aws_subnet" "public_subnet_1" {
   }
 }
 
-# NAT Gateway
 resource "aws_nat_gateway" "ecs_nat_gateway" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_subnet_1.id
@@ -45,7 +40,6 @@ resource "aws_nat_gateway" "ecs_nat_gateway" {
   }
 }
 
-# Private Subnets
 resource "aws_subnet" "private_subnet_1" {
   vpc_id                  = aws_vpc.ecs_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -68,7 +62,6 @@ resource "aws_subnet" "private_subnet_2" {
   }
 }
 
-# Route Table for Public Subnet
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.ecs_vpc.id
 
@@ -82,7 +75,6 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-# Route Table for Private Subnets with NAT Gateway
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.ecs_vpc.id
 
@@ -96,7 +88,6 @@ resource "aws_route_table" "private_rt" {
   }
 }
 
-# Route Table Associations
 resource "aws_route_table_association" "public_subnet_1_association" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.public_rt.id
@@ -112,15 +103,14 @@ resource "aws_route_table_association" "private_subnet_2_association" {
   route_table_id = aws_route_table.private_rt.id
 }
 
-# Security Groups
 resource "aws_security_group" "ecs_sg" {
   name        = "ecs-sg"
   description = "Security group for ECS tasks"
   vpc_id      = aws_vpc.ecs_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.ecs_vpc.cidr_block]
   }
@@ -139,8 +129,8 @@ resource "aws_security_group" "alb_sg" {
   vpc_id      = aws_vpc.ecs_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.ecs_vpc.cidr_block]
   }
@@ -153,7 +143,6 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/aws-ecs-logs-${var.environment}"
   retention_in_days = 1
@@ -166,7 +155,6 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
   }
 }
 
-# Internal Load Balancer
 resource "aws_lb" "internal_lb" {
   name               = "${var.prefix}-internal-lb-${var.environment}"
   internal           = true
@@ -175,10 +163,9 @@ resource "aws_lb" "internal_lb" {
   subnets            = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
 }
 
-# Listeners for Load Balancers
 resource "aws_lb_listener" "internal_listener" {
   load_balancer_arn = aws_lb.internal_lb.arn
-  port              = "80"
+  port              = "8080"
   protocol          = "HTTP"
 
   default_action {
@@ -191,11 +178,10 @@ resource "aws_lb_listener" "internal_listener" {
   }
 }
 
-# Target Groups
 resource "aws_lb_target_group" "ecs_tg" {
   count       = length(var.service_names)
   name        = "${var.prefix}-tg-${var.service_names[count.index]}-${var.environment}"
-  port        = 80
+  port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.ecs_vpc.id
@@ -210,7 +196,6 @@ resource "aws_lb_target_group" "ecs_tg" {
   }
 }
 
-# Listener Rules for Load Balancers
 resource "aws_lb_listener_rule" "service_rules" {
   count        = length(var.service_names)
   listener_arn = aws_lb_listener.internal_listener.arn
@@ -228,31 +213,10 @@ resource "aws_lb_listener_rule" "service_rules" {
   }
 }
 
-# IAM Role for ECS Task Execution
 data "aws_iam_role" "ecs_task_execution_role" {
   name = "LabRole"
 }
 
-resource "aws_iam_role_policy" "ecs_task_execution_policy" {
-  name = "ecsTaskExecutionPolicy"
-  role = data.aws_iam_role.ecs_task_execution_role.name
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ],
-        Resource = "arn:aws:logs:*:*:log-group:/ecs/*"
-      }
-    ]
-  })
-}
-
-# ECS Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.prefix}-${var.environment}"
   setting {
@@ -261,7 +225,6 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   }
 }
 
-# ECS Task Definitions
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(var.task_names)
   family                   = "${var.prefix}-${var.task_names[count.index]}-${var.environment}"
@@ -280,8 +243,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 8080
+          hostPort      = 8080
         }
       ]
       logConfiguration = {
@@ -310,7 +273,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
   ])
 }
 
-# ECS Services
 resource "aws_ecs_service" "ecs_service" {
   count           = length(var.service_names)
   name            = "${var.prefix}-${var.service_names[count.index]}-${var.environment}"
@@ -329,11 +291,10 @@ resource "aws_ecs_service" "ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_tg[count.index].arn
     container_name   = var.service_names[count.index]
-    container_port   = 80
+    container_port   = 8080
   }
 }
 
-# API Gateway
 resource "aws_api_gateway_rest_api" "main" {
   name = "${var.prefix}-api-gateway-${var.environment}"
 }
