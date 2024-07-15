@@ -95,23 +95,33 @@ Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tien
 
 (Todas las herramientas utilizadas tanto BE como FE)
 
+- GitHub:
+- GitHub Actions:
 - SonarCloud: Utilizamos sonarcloud porque ...
+- Docker:
+- Maven:
+- Node:
 - Postman: Utilizamos sonarcloud porque ...
 - Newman: Utilizamos sonarcloud porque ...
-
-
+- AWS Academy Learner Lab:
+- Terraform:
+- AWS CLI:
+- ECR:
+- ECS:
+- API GW:
+- S3 Buckets:
 
 ### Propuesta para microservicios BE
 
 Agregar diagrama CICD
-...
-...
+
+Explicar
 
 ### Propuesta para aplicación FE
 
 Agregar diagrama CICD
-...
-...
+
+Explicar
 
 ## Etapas de CI para BE
 ### Analisis en SonarCloud (BE) 
@@ -204,7 +214,16 @@ Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso cor
   <img src="Extras/Imagenes/Testing-de-be/testing-correcto-shipping-service.png" alt="Testing correcto payments service">
 </p>
 
+### Build del microservicio
+
+Utilizando Maven.
+
 ## Etapas de CD para BE
+### Push image ECR
+
+...
+...
+
 ### Deploy ECS
 
 ...
@@ -216,9 +235,9 @@ Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso cor
 ...
 
 ## Etapas de CI para FE
-### Analisis en SonarCloud 
+### Analisis en SonarCloud (FE) 
 
-Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis de código estático. 
+Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis de código estático. Tambien se utilzó la configuración por defecto brindada por SonarCloud.
 
 ### Analisis de codigo para la aplicación frontend
 
@@ -232,8 +251,27 @@ Los resultados obtenidos son los siguientes:
   <img src="Extras/Imagenes/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
 </p>
 
+### Build de la aplicación
+
+Etapa de instalación de dependencias y posterior build de la aplicación. Antes de finalizar, se sube el compilado a un artifact de GitHub, el cual luego queda asociado al workflow y permite ser descargado para poder tener un control de las versiones.
+
+A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
+
+Creación del artefacto en ejecución:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/Proceso-CI/FE/upload-build-artifacts.png" alt="">
+</p>
+
+Como se visualiza el artefacto generado:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/Proceso-CI/FE/build-artifacts.png" alt="">
+</p>
+
 ## Etapas de CD para FE
 ### Deploy S3 BUCKETS
 
-...
-...
+La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependecias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
+
+
