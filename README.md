@@ -62,7 +62,7 @@ para adaptarse y prosperar en el futuro.
 ### Repositorios de Desarrollo (Gitflow)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Diagramas/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/Diagramas-flujos-integracion/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
 </p>
 
 En estos repositorios almacenamos todo lo relacionado al desarrollo de los microservicios, en nuestro caso tenemos 1 repositorio por microservicio de BE (4 en total) y 1 para el aplicativo de FE.
@@ -73,7 +73,7 @@ Mantenemos 3 ramas estables (Main, Staging, Develop) y ramas temporales en caso 
 ### Repositorio de DevOps (Trunk Based)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Diagramas/Diagrama-DevOps.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/Diagramas-flujos-integracion/Diagrama-DevOps.png" alt="Diagrama de flujo">
 </p>
 
 En este repositorio almacenamos todo lo relacionado a documentación relevante, infrastructura como codigo e imagenes relacionadas al CI/CD.
@@ -84,7 +84,7 @@ Manejamos "Feature branches" para las distintas partes agregadas de documentaci�
 ## Tablero Kanban
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Kanban/Kanban.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/Kanban/Kanban.png" alt="Kanban">
 </p>
 
 Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tiene el beneficio de ser trabajado con "Issues", los cuales pueden ser vinculados a nuevas ramas temporales. Al finalizar el trabajo en las mismas, se hace un pull request y se espera a la aprobación del otro, esto provoca que el estado del issue asociado a la rama cambie a finalizado.
@@ -93,39 +93,44 @@ Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tien
 
 ### Herramientas utilizadas
 
-(Todas las herramientas utilizadas tanto BE como FE)
+A continuación damos una explicación breve de cada herramienta usada tanto para el aplicativo de FE como los microservicios de BE.
 
-- GitHub:
-- GitHub Actions:
-- SonarCloud: Utilizamos sonarcloud porque ...
-- Docker:
-- Maven:
-- Node:
-- Postman: Utilizamos sonarcloud porque ...
-- Newman: Utilizamos sonarcloud porque ...
-- AWS Academy Learner Lab:
-- Terraform:
-- AWS CLI:
-- ECR:
-- ECS:
-- API GW:
-- S3 Buckets:
+- GitHub: Para alojar y versionar nuestro código en la nube, facilitando la colaboración y el control de cambios en el desarrollo.
+- GitHub Actions: Para automizar flujos de trabajo y para desencadenar la Pipeline de CI/CD empleada.
+- SonarCloud: Para analizar posibles vulnerabilidades en el codigo de los aplicativos.
+- Docker: Para la creación y mantenimiento de imágenes de los microservicios de backend.
+- Maven: Para la gestión de dependencias y la automatización de procesos de building en los microservicios de backend que usan Java.
+- Node: Para compilar el aplicativo de frontend en JavaScript.
+- Postman: Para testear el funcionamiento de las APIs de los microservicios de backend.
+- Newman: Para ejecutar colecciones de Postman desde la línea de comandos desde un workflow file.
+- AWS Academy Learner Lab: Para el uso y mantenimiento de recursos que otorga AWS.
+- Visual Studio Code: Para desarrollo de forma local y gestión de recursos de software necesarios. 
+- Terraform: Para definir y programar la infrastructura como codigo utilizada.
+- AWS CLI: Para gestionar nuestros servicios de AWS por línea de comandos.
+- Elastic Container Repository (ECR): Para el almacenaje de imágenes Docker de los microservicios de backend.
+- Elastic Container Service (ECS): Como orquestador de contenedores Docker, manejando el escalado y la disponibilidad de nuestras aplicaciones.
+- S3 Buckets: Para el almacenamiento del código del aplicativo de frontend.
 
 ## IaC - Terraform 
 
-Agregar breve explicacion de porque elegimos terraform y como lo trabajamos
+Toda la infrastructura es desplegada como IaC en Terraform.
+La misma está fragmentada por modulos y se diferencia su despliegue por workspaces.
 
 (ver si meter alguna imagen y redireccion a la carpeta terraform para mostrar algo desde el readme raiz)
 
 ### Propuesta para microservicios BE
 
-Agregar diagrama CICD
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/Diagramas/DiagramaBE.png" alt="Diagrama de CICD">
+</p>
 
 Explicar
 
 ### Propuesta para aplicación FE
 
-Agregar diagrama CICD
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/Diagramas/DiagramaFE.png" alt="Diagrama de CICD">
+</p>
 
 Explicar
 
