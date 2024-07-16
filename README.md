@@ -111,6 +111,12 @@ Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tien
 - API GW:
 - S3 Buckets:
 
+## IaC - Terraform 
+
+Agregar breve explicacion de porque elegimos terraform y como lo trabajamos
+
+(ver si meter alguna imagen y redireccion a la carpeta terraform para mostrar algo desde el readme raiz)
+
 ### Propuesta para microservicios BE
 
 Agregar diagrama CICD
