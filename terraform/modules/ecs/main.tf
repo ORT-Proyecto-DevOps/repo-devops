@@ -227,13 +227,12 @@ resource "aws_lb_listener_rule" "service_rules" {
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ecs_tg[count.index].arn
-
-  condition {
+  }
+    condition {
     path_pattern {
       values = ["/${var.api_paths[count.index]}/*"]
       }
     }
-  }
 }
 
 data "aws_iam_role" "ecs_task_execution_role" {
@@ -326,7 +325,7 @@ resource "aws_api_gateway_method" "service" {
 resource "aws_api_gateway_integration" "service" {
   count                   = length(var.api_paths)
   rest_api_id             = aws_api_gateway_rest_api.main.id
-  resource_id             = aws_api_gateway_resource.service[*count.index].id
+  resource_id             = aws_api_gateway_resource.service[count.index].id
   http_method             = aws_api_gateway_method.service[count.index].http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
