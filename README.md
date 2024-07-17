@@ -164,7 +164,28 @@ Al estar manejando 3 ambientes, se hizo 1 workspace para cada ambiente estable, 
   <img src="Extras/Imagenes/CICD/Diagramas/DiagramaBE.png" alt="Diagrama de CICD">
 </p>
 
-Explicar
+#### CI (Integración Continua)
+
+- GitHub Repository: Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
+
+- GitHub Actions: Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
+
+- SonarCloud: SonarCloud realiza análisis estático y dinámico del código.
+Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
+
+- Maven: Maven se encarga de compilar el proyecto. Resuelve dependencias y empaqueta el código.
+
+- Postman (Newman): Se ejecutan pruebas funcionales usando Postman Collections a través de Newman, el cual permite la automatización de pruebas de API, asegurando que los servicios funcionen correctamente.
+
+#### CD (Entrega Continua)
+
+- Docker: El proyecto se empaqueta en una imagen de Docker.
+La imagen contiene todo lo necesario para ejecutar la aplicación, como el código, las dependencias y el entorno.
+
+- AWS ECR (Elastic Container Registry): La imagen de Docker se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
+
+- Update Task Definition and Service: Se actualiza la definición de la tarea y el servicio en AWS con los nuevos contenedores.
+Esto implica desplegar la nueva versión de la aplicación, reemplazando los contenedores antiguos con los nuevos.
 
 ### Propuesta para aplicación FE
 
@@ -172,7 +193,27 @@ Explicar
   <img src="Extras/Imagenes/CICD/Diagramas/DiagramaFE.png" alt="Diagrama de CICD">
 </p>
 
-Explicar
+#### CI (Integración Continua)
+
+- GitHub Repository: Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
+
+- GitHub Actions: Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
+
+- SonarCloud: SonarCloud realiza análisis estático y dinámico del código.
+Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
+
+- Build (Node.js & npm): El proyecto se compila utilizando Node.js y npm.
+Se generan los artefactos de construcción que son necesarios para el despliegue.
+
+- GitHub Artifacts: Los artefactos de construcción se suben a GitHub Artifacts.
+GitHub Artifacts almacena los archivos generados durante el proceso de construcción, que pueden ser utilizados en el proceso de despliegue.
+
+#### CD (Entrega Continua)
+
+- Download Build Artifacts: Se descargan los artefactos de construcción desde GitHub Artifacts.
+
+- Amazon S3: Los artefactos compilados se despliegan en un bucket de Amazon S3.
+Amazon S3 se utiliza para almacenar y servir los archivos estáticos del proyecto.
 
 ## Etapas de CI para BE
 ### Analisis en SonarCloud (BE) 
@@ -270,10 +311,21 @@ Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso cor
 Utilizando Maven.
 
 ## Etapas de CD para BE
-### Push image ECR
+### Push image ECR (Elastic Container Registry)
 
-...
-...
+Una vez empaquetado el microservicio en una imagen de Docker. La imagen se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
+
+Las imagen alojadas en este contenedor de imagenes, estan diferenciadas por sus etiquetas, el cual lleva el nombre del microservicio acompañado del nombre de la rama estable, que puede ser "prod" por production, "stg" por staging y "dev" por develop.
+
+Ejemplo: orders-service-develop, orders-service-stg, orders-service-prod
+
+En la imagen a continuación se ven todos los contenedores registrados para el ambiente develop:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/BE/ecr-repository.png" alt="">
+</p>
+
+> Dato: Los nuevos contenedores que se registran obtienen la nueva etiqueta y los antiguos la pierden.
 
 ### Deploy ECS
 
@@ -311,13 +363,13 @@ A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
 Creación del artefacto en ejecución:
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Proceso-CI/FE/upload-build-artifacts.png" alt="">
+  <img src="Extras/Imagenes/CICD/FE/upload-build-artifacts.png" alt="">
 </p>
 
 Como se visualiza el artefacto generado:
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Proceso-CI/FE/build-artifacts.png" alt="">
+  <img src="Extras/Imagenes/CICD/FE/build-artifacts.png" alt="">
 </p>
 
 ## Etapas de CD para FE
