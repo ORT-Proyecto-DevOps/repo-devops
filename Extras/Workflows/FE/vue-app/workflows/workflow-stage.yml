@@ -1,0 +1,28 @@
+name: Github Action Workflow STAGE
+
+on:
+  push:
+    branches:
+      - staging
+  repository_dispatch:
+    types:
+      - ci-cd-stg
+  workflow_dispatch:
+
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-cd-stg:
+    uses: ORT-Proyecto-DevOps/vue-app/.github/workflows/ci_cd_pipeline.yml@staging
+    with:
+      CI_ENV: staging
+      CONTENTFUL_ENVIRONMENT: 'staging'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      S3_ORIGIN_BUCKET: ${{ secrets.S3_ORIGIN_BUCKET_STG }}
+      SONAR_TOKEN_VUE_APP: ${{ secrets.SONAR_TOKEN_VUE_APP }}
