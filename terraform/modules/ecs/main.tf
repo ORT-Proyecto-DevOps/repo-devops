@@ -2,6 +2,9 @@ resource "aws_vpc" "ecs_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
   tags = {
     Name = "${var.prefix}-vpc"
@@ -14,6 +17,10 @@ resource "aws_internet_gateway" "ecs_igw" {
   tags = {
     Name = "${var.prefix}-igw"
   }
+}
+
+resource "aws_eip" "nat_eip" {
+  vpc = true
 }
 
 resource "aws_eip" "nat_eip" {
@@ -102,10 +109,22 @@ resource "aws_route_table" "private_rt" {
 resource "aws_route_table_association" "public_subnet_1_association" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.public_rt.id
+  route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_route_table_association" "public_subnet_2_association" {
   subnet_id      = aws_subnet.public_subnet_2.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "private_subnet_1_association" {
+  subnet_id      = aws_subnet.private_subnet_1.id
+  route_table_id = aws_route_table.private_rt.id
+}
+
+resource "aws_route_table_association" "private_subnet_2_association" {
+  subnet_id      = aws_subnet.private_subnet_2.id
+  route_table_id = aws_route_table.private_rt.id
   route_table_id = aws_route_table.public_rt.id
 }
 
@@ -251,6 +270,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
   task_role_arn      = data.aws_iam_role.ecs_task_execution_role.arn
   execution_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn      = data.aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -259,6 +280,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
       essential = true
       portMappings = [
         {
+          containerPort = 8080
+          hostPort      = 8080
           containerPort = 8080
           hostPort      = 8080
         }
@@ -271,6 +294,20 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+      environment = [
+        {
+          name  = "shipping-service"
+          value = "http://${aws_lb.public_lb.dns_name}/${var.service_names[0]}"
+        },
+        {
+          name  = "payments-service"
+          value = "http://${aws_lb.public_lb.dns_name}/${var.service_names[1]}"
+        },
+        {
+          name  = "products-service"
+          value = "http://${aws_lb.public_lb.dns_name}/${var.service_names[2]}"
+        }
+      ]
     }
   ])
 }
