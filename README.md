@@ -1,5 +1,5 @@
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Logos/logoOrt.jpg" alt="Logo">
+  <img src="Extras/Imagenes/logo.jpg" alt="Logo">
 </p>
 
 <center>
@@ -62,7 +62,7 @@ para adaptarse y prosperar en el futuro.
 ### Repositorios de Desarrollo (Gitflow)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Diagramas-flujos-integracion/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/CICD/Diagramas-flujos-integracion/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
 </p>
 
 En estos repositorios almacenamos todo lo relacionado al desarrollo de los microservicios, en nuestro caso tenemos 1 repositorio por microservicio de BE (4 en total) y 1 para el aplicativo de FE.
@@ -73,7 +73,7 @@ Mantenemos 3 ramas estables (Main, Staging, Develop) y ramas temporales en caso 
 ### Repositorio de DevOps (Trunk Based)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Diagramas-flujos-integracion/Diagrama-DevOps.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/CICD/Diagramas-flujos-integracion/Diagrama-DevOps.png" alt="Diagrama de flujo">
 </p>
 
 En este repositorio almacenamos todo lo relacionado a documentación relevante, infrastructura como codigo e imagenes relacionadas al CI/CD.
@@ -84,7 +84,7 @@ Manejamos "Feature branches" para las distintas partes agregadas de documentaci�
 ## Tablero Kanban
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Kanban/Kanban.png" alt="Kanban">
+  <img src="Extras/Imagenes/Kanban.png" alt="Kanban">
 </p>
 
 Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tiene el beneficio de ser trabajado con "Issues", los cuales pueden ser vinculados a nuevas ramas temporales. Al finalizar el trabajo en las mismas, se hace un pull request y se espera a la aprobación del otro, esto provoca que el estado del issue asociado a la rama cambie a finalizado.
@@ -140,14 +140,13 @@ terraform/
 
 A continuación enlistaremos la infrastructura desplegada por workspace: <br/>
 
-### Workspace s3_buckets_workspace:
+### Workspace "s3_buckets_workspace":
 - 1 S3 Bucket para el aplicativo de frontend con configuraciones de policies y acceso publico.
 
-### Workspace ecr_workspace:
+### Workspace "ecr_workspace":
 - 1 ECR Repository para el almacenamiento de imagenes de los microservicios de backend.
 
-
-### Workspace ecs_env_workspace:
+### Workspace "ecs_env_workspace":
 Networking:
 - 1 VPC con 2 zonas de disponibilidad (us-east-1a - us-east-1b)
 - 1 Cluster
@@ -158,10 +157,48 @@ Networking:
 
 Al estar manejando 3 ambientes, se hizo 1 workspace para cada ambiente estable, por lo que la palabra "env" es reemplazada por "dev", "stg" o "prod". <br/>
 
+## Workflows
+A continuación mostramos la estructura de directorios utilizada para los flujos de backend y frontend de CI/CD:
+```
+Workflows
+├── BE
+│   ├── orders-service
+│   │   ├── ci_cd_pipeline.yml
+│   │   ├── workflow-dev.yml
+│   │   ├── workflow-prod.yml
+│   │   └── workflow-stage.yml
+│   ├── payments-service
+│   │   ├── ci_cd_pipeline.yml
+│   │   ├── workflow-dev.yml
+│   │   ├── workflow-prod.yml
+│   │   └── workflow-stage.yml
+│   ├── products-service
+│   │   ├── ci_cd_pipeline.yml
+│   │   ├── workflow-dev.yml
+│   │   ├── workflow-prod.yml
+│   │   └── workflow-stage.yml
+│   └── shipping-service
+│       ├── ci_cd_pipeline.yml
+│       ├── workflow-dev.yml
+│       ├── workflow-prod.yml
+│       └── workflow-stage.yml
+└── FE
+    └── vue-app
+        ├── scripts
+        │   ├── build.sh
+        │   └── deploy.sh
+        └── workflows
+            ├── ci_cd_pipeline.yml
+            ├── workflow-dev.yml
+            ├── workflow-prod.yml
+            └── workflow-stage.yml
+```
+
+
 ### Propuesta para microservicios BE
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas/DiagramaBE.png" alt="Diagrama de CICD">
+  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaBE.png" alt="Diagrama de CICD">
 </p>
 
 #### CI (Integración Continua)
@@ -190,7 +227,7 @@ Esto implica desplegar la nueva versión de la aplicación, reemplazando los con
 ### Propuesta para aplicación FE
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas/DiagramaFE.png" alt="Diagrama de CICD">
+  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaFE.png" alt="Diagrama de CICD">
 </p>
 
 #### CI (Integración Continua)
@@ -231,11 +268,11 @@ Para el análisis de calidad de código utilizamos la configuracion que incluye 
 Para el microservicio "orders", el resultado fue "Failed". Esto quiere decir que no cumple con los requisitos de calidad definidos por SonarCloud. Cuando un análisis falla, puede ser que el código introducido tiene vulnerabilidades críticas de seguridad, malas prácticas de programación, código duplicado en exceso, falta de cobertura de pruebas, entre otros. 
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/orders-service1.png" alt="SonarCloud orders service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/orders-service1.png" alt="SonarCloud orders service">
 </p>
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/orders-service2.png" alt="SonarCloud orders service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/orders-service2.png" alt="SonarCloud orders service">
 </p>
 
 ### Payments service
@@ -243,11 +280,11 @@ Para el microservicio "orders", el resultado fue "Failed". Esto quiere decir que
 Para el microservicio de "payments", el resultado pasó los estándares de cálidad.
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/payments-service1.png" alt="SonarCloud payments service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/payments-service1.png" alt="SonarCloud payments service">
 </p>
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/payments-service2.png" alt="SonarCloud payments service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/payments-service2.png" alt="SonarCloud payments service">
 </p>
 
 ### Products service
@@ -255,11 +292,11 @@ Para el microservicio de "payments", el resultado pasó los estándares de cáli
 Para el microservicio de "products", el resultado pasó los estándares de cálidad.
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/products-service1.png" alt="SonarCloud products service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/products-service1.png" alt="SonarCloud products service">
 </p>
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/products-service2.png" alt="SonarCloud products service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/products-service2.png" alt="SonarCloud products service">
 </p>
 
 ### Shipping service
@@ -267,11 +304,11 @@ Para el microservicio de "products", el resultado pasó los estándares de cáli
 Para el microservicio de "shipping", el resultado pasó los estándares de cálidad.
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
 </p>
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
 </p>
 
 ## Testing de microservicios 
@@ -327,15 +364,19 @@ En la imagen a continuación se ven todos los contenedores registrados para el a
 
 > Dato: Los nuevos contenedores que se registran obtienen la nueva etiqueta y los antiguos la pierden.
 
-### Deploy ECS
+### Deploy en ECS
 
-...
-...
+Para los servicios de backend se decidió usar Elastic Container Services, los mismos fueron desplegados en base a los ambientes que tenemos los cuales son dev, staging y prod. <br/>
+Las imagenes que anteriormente fueron subidas al repositorio de ECR, son luego actualizadas por el workflow de CI/CD en el task definition y en la revision de cada service. <br/>
+Luego de esto, el ALB se ocupa de verificar que cada task funcione correctamente con un health check, y de ser así despliega un target.
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/testing-correcto-alb.jpeg" alt="">
+</p>
 
 ### Servicio serverless - API Gateway
 
-...
-...
+El ALB al ser interno, requiere de un API GW para poder conectarse a internet, por lo que agrega otra capa de seguridad.
 
 ## Etapas de CI para FE
 ### Analisis en SonarCloud (FE) 
@@ -347,11 +388,11 @@ Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis 
 Los resultados obtenidos son los siguientes:
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-fe/vue-app1.png" alt="SonarCloud aplicación frontend">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app1.png" alt="SonarCloud aplicación frontend">
 </p>
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
 </p>
 
 ### Build de la aplicación
