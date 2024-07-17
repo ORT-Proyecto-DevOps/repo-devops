@@ -160,6 +160,7 @@ Al estar manejando 3 ambientes, se hizo 1 workspace para cada ambiente estable, 
 ## Workflows
 A continuación mostramos la estructura de directorios utilizada para los flujos de backend y frontend de CI/CD:
 ```
+Extras/
 Workflows
 ├── BE
 │   ├── orders-service
@@ -273,7 +274,51 @@ Para el microservicio de "shipping", el resultado pasó los estándares de cáli
 El proceso de build utiliza Maven para compilar el código fuente del microservicio, asegurando que todas las dependencias se resuelvan. Además, se ejecutan pruebas para verificar la funcionalidad del servicio antes de empaquetarlo en una imagen Docker.
 
 ### Postman (Newman)
-Se ejecutan pruebas funcionales usando Postman Collections a través de Newman, el cual permite la automatización de pruebas de API, asegurando que los servicios funcionen correctamente.
+Se ejecutan pruebas funcionales usando Postman Collections a través de Newman, el cual permite la automatización de pruebas de API, asegurando que los servicios funcionen correctamente. El fin de estas pruebas es reducir la posibilidad de introducir errores al código, y que todo funcione como se espera. 
+
+Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso correcto de testing para todos los microservicios.
+
+Las colecciones de Postman que se utilizaron para el testing de los microservicios se encuentra en el siguiente directorio:
+
+```
+Extras/
+Testing/
+└── BE/
+    └── Postman-Collection/
+        ├── orders.postman_collection.json
+        ├── payments.postman_collection.json
+        ├── products.postman_collection.json
+        └── shipping.postman_collection.json
+```
+
+## Ejemplo de resultados correctos
+### Orders service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-orders-service.png" alt="Testing correcto payments service">
+</p>
+
+### Payments service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-payments-service.png" alt="Testing correcto payments service">
+</p>
+
+### Products service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-products-service.png" alt="Testing correcto payments service">
+</p>
+
+### Shipping service 
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-shipping-service.png" alt="Testing correcto payments service">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/testing-correcto-alb.jpeg" alt="">
+</p>
 
 ## CD (Entrega Continua)
 ### Docker 
@@ -375,40 +420,5 @@ GitHub Artifacts almacena los archivos generados durante el proceso de construcc
 ### Amazon S3 
 La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependencias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
 
-## Testing de microservicios 
-
-Para el testing de los microservicios se utilizaron pruebas de integración con Postman. El fin de estas pruebas es reducir la posibilidad de introducir errores al código, y que todo funcione como se espera. 
-
-Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso correcto de testing para todos los microservicios.
-
-### Ejemplo de resultados correctos
-
-### Orders service 
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-orders-service.png" alt="Testing correcto payments service">
-</p>
-
-### Payments service 
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-payments-service.png" alt="Testing correcto payments service">
-</p>
-
-### Products service 
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-products-service.png" alt="Testing correcto payments service">
-</p>
-
-### Shipping service 
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Testing-de-be/testing-correcto-shipping-service.png" alt="Testing correcto payments service">
-</p>
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/testing-correcto-alb.jpeg" alt="">
-</p>
 
 
