@@ -277,6 +277,12 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+      environment = var.task_names[count.index] == "orders-task" ? [ ## Si el task es orders-task se le agregan variables de entorno.
+        {
+          name  = "APP_ARGS"
+          value = "http://${aws_lb.aws_lb.dns_name}:8080 http://${aws_lb.aws_lb.dns_name}:8080 http://${aws_lb.aws_lb.dns_name}:8080"
+        }
+      ] : []
     }
   ])
 }
