@@ -178,16 +178,16 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
   }
 }
 
-resource "aws_lb" "internal_lb" {
-  name               = "${var.prefix}-internal-lb-${var.environment}"
+resource "aws_lb" "aws_lb" {
+  name               = "${var.prefix}-lb-${var.environment}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 }
 
-resource "aws_lb_listener" "internal_listener" {
-  load_balancer_arn = aws_lb.internal_lb.arn
+resource "aws_lb_listener" "lb_listener" {
+  load_balancer_arn = aws_lb.aws_lb.arn
   port              = "8080"
   protocol          = "HTTP"
 
@@ -203,7 +203,7 @@ resource "aws_lb_listener" "internal_listener" {
 
 resource "aws_lb_target_group" "ecs_tg" {
   count       = length(var.service_names)
-  name        = "${var.prefix}-tg-${element(var.service_names, count.index)}-${var.environment}"
+  name        = "${var.prefix}-tg-${var.service_names[count.index]}-${var.environment}"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
@@ -221,17 +221,17 @@ resource "aws_lb_target_group" "ecs_tg" {
 
 resource "aws_lb_listener_rule" "service_rules" {
   count        = length(var.service_names)
-  listener_arn = aws_lb_listener.internal_listener.arn
+  listener_arn = aws_lb_listener.lb_listener.arn
   priority     = 100 + count.index
 
   action {
     type             = "forward"
-    target_group_arn = element(aws_lb_target_group.ecs_tg[*].arn, count.index)
-  }
+    target_group_arn = aws_lb_target_group.ecs_tg[count.index].arn
 
   condition {
     path_pattern {
-      values = ["/${element(var.api_paths, count.index)}/*"]
+      values = ["/${var.api_paths[count.index]}/*"]
+      }
     }
   }
 }
@@ -250,7 +250,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(var.task_names)
-  family                   = "${var.prefix}-${element(var.task_names, count.index)}-${var.environment}"
+  family                   = "${var.prefix}-${var.task_names[count.index]}-${var.environment}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -261,7 +261,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name  = element(var.service_names, count.index)
+      name  = var.service_names[count.index]
       image = "hello-world:latest"
       essential = true
       portMappings = [
@@ -284,9 +284,9 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_service" "ecs_service" {
   count           = length(var.service_names)
-  name            = "${var.prefix}-${element(var.service_names, count.index)}-${var.environment}"
+  name            = "${var.prefix}-${var.service_names[count.index]}-${var.environment}"
   cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = element(aws_ecs_task_definition.ecs_task[*].arn, count.index)
+  task_definition = aws_ecs_task_definition.ecs_task[count.index].arn
   launch_type     = "FARGATE"
   desired_count   = 1
   deployment_maximum_percent = 200
@@ -298,8 +298,8 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = element(aws_lb_target_group.ecs_tg[*].arn, count.index)
-    container_name   = element(var.service_names, count.index)
+    target_group_arn = aws_lb_target_group.ecs_tg[count.index].arn
+    container_name   = var.service_names[count.index]
     container_port   = 8080
   }
 }
@@ -312,13 +312,13 @@ resource "aws_api_gateway_resource" "service" {
   count       = length(var.api_paths)
   rest_api_id = aws_api_gateway_rest_api.main.id
   parent_id   = aws_api_gateway_rest_api.main.root_resource_id
-  path_part   = element(var.api_paths, count.index)
+  path_part   = var.api_paths[count.index]
 }
 
 resource "aws_api_gateway_method" "service" {
   count         = length(var.api_paths)
   rest_api_id   = aws_api_gateway_rest_api.main.id
-  resource_id   = element(aws_api_gateway_resource.service[*].id, count.index)
+  resource_id   = aws_api_gateway_resource.service[count.index].id
   http_method   = "ANY"
   authorization = "NONE"
 }
@@ -326,11 +326,11 @@ resource "aws_api_gateway_method" "service" {
 resource "aws_api_gateway_integration" "service" {
   count                   = length(var.api_paths)
   rest_api_id             = aws_api_gateway_rest_api.main.id
-  resource_id             = element(aws_api_gateway_resource.service[*].id, count.index)
+  resource_id             = aws_api_gateway_resource.service[*count.index].id
   http_method             = aws_api_gateway_method.service[count.index].http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${aws_lb.internal_lb.dns_name}/${element(var.api_paths, count.index)}"
+  uri                     = "http://${aws_lb.aws_lb.dns_name}/${var.api_paths[count.index]}"
 }
 
 resource "aws_api_gateway_deployment" "main" {
