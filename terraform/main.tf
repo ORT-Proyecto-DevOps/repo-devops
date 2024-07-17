@@ -28,7 +28,7 @@ locals {
   prefix        = "aws-ecs"
   service_names = ["shipping-service", "payments-service", "products-service", "orders-service"]
   task_names    = ["shipping-task", "payments-task", "products-task", "orders-task"]
-  api_paths = ["shipping", "payments", "products", "orders"]
+  api_paths     = ["shipping", "payments", "products", "orders"]
 
   environments = {
     dev  = { workspace = "ecs_dev_workspace", env = "dev" }

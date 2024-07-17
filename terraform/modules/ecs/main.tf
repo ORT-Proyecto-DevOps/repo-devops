@@ -210,7 +210,7 @@ resource "aws_lb_target_group" "ecs_tg" {
   vpc_id      = aws_vpc.ecs_vpc.id
 
     health_check {
-    path                = "/health"
+    path                = "${var.api_paths}/health"
     healthy_threshold   = 2
     unhealthy_threshold = 10
     timeout             = 30
