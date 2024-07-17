@@ -213,14 +213,13 @@ Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. Gi
 SonarCloud realiza análisis estático y dinámico del código.
 Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
 
+#### Requisitos de calidad de código
+Para el análisis de calidad de código utilizamos la configuracion que incluye SonarCloud por defecto, se trata de "Sonar Way".
+
 #### Analisis en SonarCloud 
 A continuación, se presentan los resultados obtenidos durante en análisis de código estático dentro de la rama main, de todos los repositorios que alojan los microservicios. 
 
 > Aclaración: El análisis se realiza dentro de todas las ramas estables de los repositorios, es decir, en las ramas main, staging y develop. Pero a continuación mostraremos únicamente el analisis de la rama main.
-
-#### Requisitos de calidad de código
-
-Para el análisis de calidad de código utilizamos la configuracion que incluye SonarCloud por defecto, se trata de "Sonar Way".
 
 #### Orders service
 
@@ -381,6 +380,8 @@ Los resultados obtenidos son los siguientes:
 <p style="text-align: center;">
   <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
 </p>
+
+Para el aplicativo de frontend, el resultado pasó los estándares de cálidad.
 
 ### Build (Node.js & npm)
 
