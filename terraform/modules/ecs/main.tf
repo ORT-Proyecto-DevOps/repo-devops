@@ -209,7 +209,14 @@ resource "aws_lb_target_group" "ecs_tg" {
   target_type = "ip"
   vpc_id      = aws_vpc.ecs_vpc.id
 
-  # Omite health_check para deshabilitarlo
+    health_check {
+    path                = "/health"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 30
+    interval            = 60
+    matcher             = "200"
+  }
 }
 
 resource "aws_lb_listener_rule" "service_rules" {
