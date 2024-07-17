@@ -195,75 +195,33 @@ Workflows
 ```
 
 
-### Propuesta para microservicios BE
+## Propuesta para microservicios BE
 
 <p style="text-align: center;">
   <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaBE.png" alt="Diagrama de CICD">
 </p>
 
-#### CI (Integración Continua)
+## CI (Integración Continua)
+### GitHub Repository
+Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
 
-- GitHub Repository: Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
+### GitHub Actions
+Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
 
-- GitHub Actions: Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
-
-- SonarCloud: SonarCloud realiza análisis estático y dinámico del código.
+### SonarCloud 
+SonarCloud realiza análisis estático y dinámico del código.
 Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
 
-- Maven: Maven se encarga de compilar el proyecto. Resuelve dependencias y empaqueta el código.
-
-- Postman (Newman): Se ejecutan pruebas funcionales usando Postman Collections a través de Newman, el cual permite la automatización de pruebas de API, asegurando que los servicios funcionen correctamente.
-
-#### CD (Entrega Continua)
-
-- Docker: El proyecto se empaqueta en una imagen de Docker.
-La imagen contiene todo lo necesario para ejecutar la aplicación, como el código, las dependencias y el entorno.
-
-- AWS ECR (Elastic Container Registry): La imagen de Docker se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
-
-- Update Task Definition and Service: Se actualiza la definición de la tarea y el servicio en AWS con los nuevos contenedores.
-Esto implica desplegar la nueva versión de la aplicación, reemplazando los contenedores antiguos con los nuevos.
-
-### Propuesta para aplicación FE
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaFE.png" alt="Diagrama de CICD">
-</p>
-
-#### CI (Integración Continua)
-
-- GitHub Repository: Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
-
-- GitHub Actions: Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
-
-- SonarCloud: SonarCloud realiza análisis estático y dinámico del código.
-Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
-
-- Build (Node.js & npm): El proyecto se compila utilizando Node.js y npm.
-Se generan los artefactos de construcción que son necesarios para el despliegue.
-
-- GitHub Artifacts: Los artefactos de construcción se suben a GitHub Artifacts.
-GitHub Artifacts almacena los archivos generados durante el proceso de construcción, que pueden ser utilizados en el proceso de despliegue.
-
-#### CD (Entrega Continua)
-
-- Download Build Artifacts: Se descargan los artefactos de construcción desde GitHub Artifacts.
-
-- Amazon S3: Los artefactos compilados se despliegan en un bucket de Amazon S3.
-Amazon S3 se utiliza para almacenar y servir los archivos estáticos del proyecto.
-
-## Etapas de CI para BE
-### Analisis en SonarCloud (BE) 
-
+#### Analisis en SonarCloud (BE)
 A continuación, se presentan los resultados obtenidos durante en análisis de código estático dentro de la rama main, de todos los repositorios que alojan los microservicios. 
 
 > Aclaración: El análisis se realiza dentro de todas las ramas estables de los repositorios, es decir, en las ramas main, staging y develop. Pero a continuación mostraremos únicamente el analisis de la rama main.
 
 #### Requisitos de calidad de código
 
-Para el análisis de calidad de código utilizamos la configuracion que incluye SonarCloud por defecto, se trata de "Sonar Way". 
+Para el análisis de calidad de código utilizamos la configuracion que incluye SonarCloud por defecto, se trata de "Sonar Way".
 
-### Orders service
+#### Orders service
 
 Para el microservicio "orders", el resultado fue "Failed". Esto quiere decir que no cumple con los requisitos de calidad definidos por SonarCloud. Cuando un análisis falla, puede ser que el código introducido tiene vulnerabilidades críticas de seguridad, malas prácticas de programación, código duplicado en exceso, falta de cobertura de pruebas, entre otros. 
 
@@ -275,7 +233,7 @@ Para el microservicio "orders", el resultado fue "Failed". Esto quiere decir que
   <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/orders-service2.png" alt="SonarCloud orders service">
 </p>
 
-### Payments service
+#### Payments service
 
 Para el microservicio de "payments", el resultado pasó los estándares de cálidad.
 
@@ -287,7 +245,7 @@ Para el microservicio de "payments", el resultado pasó los estándares de cáli
   <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/payments-service2.png" alt="SonarCloud payments service">
 </p>
 
-### Products service
+#### Products service
 
 Para el microservicio de "products", el resultado pasó los estándares de cálidad.
 
@@ -299,7 +257,7 @@ Para el microservicio de "products", el resultado pasó los estándares de cáli
   <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/products-service2.png" alt="SonarCloud products service">
 </p>
 
-### Shipping service
+#### Shipping service
 
 Para el microservicio de "shipping", el resultado pasó los estándares de cálidad.
 
@@ -310,6 +268,112 @@ Para el microservicio de "shipping", el resultado pasó los estándares de cáli
 <p style="text-align: center;">
   <img src="Extras/Imagenes/Sonarcloud/Informes-de-be/shipping-service1.png" alt="SonarCloud shipping service">
 </p>
+
+#### Build del microservicio
+El proceso de build utiliza Maven para compilar el código fuente del microservicio, asegurando que todas las dependencias se resuelvan. Además, se ejecutan pruebas para verificar la funcionalidad del servicio antes de empaquetarlo en una imagen Docker.
+
+### Postman (Newman)
+Se ejecutan pruebas funcionales usando Postman Collections a través de Newman, el cual permite la automatización de pruebas de API, asegurando que los servicios funcionen correctamente.
+
+## CD (Entrega Continua)
+### Docker 
+El proyecto se empaqueta en una imagen de Docker.
+La imagen contiene todo lo necesario para ejecutar la aplicación, como el código, las dependencias y el entorno.
+
+### ECR (Elastic Container Registry): 
+La imagen de Docker se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
+
+#### Push image ECR (Elastic Container Registry)
+
+Una vez empaquetado el microservicio en una imagen de Docker. La imagen se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
+
+Las imagen alojadas en este contenedor de imagenes, estan diferenciadas por sus etiquetas, el cual lleva el nombre del microservicio acompañado del nombre de la rama estable, que puede ser "prod" por production, "stg" por staging y "dev" por develop.
+
+Ejemplo: orders-service-develop, orders-service-stg, orders-service-prod
+
+En la imagen a continuación se ven todos los contenedores registrados para el ambiente develop:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/BE/ecr-repository.png" alt="">
+</p>
+
+> Dato: Los nuevos contenedores que se registran obtienen la nueva etiqueta y los antiguos la pierden.
+
+### Deploy en ECS
+Para los servicios de backend se decidió usar Elastic Container Services, los mismos fueron desplegados en base a los ambientes que tenemos los cuales son dev, staging y prod. <br/>
+Las imagenes que anteriormente fueron subidas al repositorio de ECR, son luego actualizadas por el workflow de CI/CD en el task definition y en la revision de cada service. <br/>
+Luego de esto, el ALB se ocupa de verificar que cada task funcione correctamente con un health check, y de ser así despliega un target.
+
+### Servicio serverless - API Gateway
+
+El ALB al ser interno, requiere de un API GW para poder conectarse a internet, por lo que agrega otra capa de seguridad.
+
+## Propuesta para aplicación FE
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaFE.png" alt="Diagrama de CICD">
+</p>
+
+## CI (Integración Continua)
+### GitHub Repository
+Los desarrolladores realizan commits y pushes de código al repositorio de GitHub.
+
+### GitHub Actions 
+Se activa un workflow en GitHub Actions cuando hay un push en el repositorio. GitHub Actions ejecuta una serie de pasos definidos en un archivo de configuración.
+
+### Build de la aplicación
+
+Etapa de instalación de dependencias y posterior build de la aplicación. Antes de finalizar, se sube el compilado a un artifact de GitHub, el cual luego queda asociado al workflow y permite ser descargado para poder tener un control de las versiones.
+
+A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
+
+Creación del artefacto en ejecución:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/FE/upload-build-artifacts.png" alt="">
+</p>
+
+Como se visualiza el artefacto generado:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/CICD/FE/build-artifacts.png" alt="">
+</p>
+
+### SonarCloud 
+SonarCloud realiza análisis estático y dinámico del código.
+Evalúa la calidad del código, buscando errores, vulnerabilidades y problemas de mantenimiento.
+
+#### Analisis en SonarCloud (FE) 
+
+Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis de código estático. Tambien se utilzó la configuración por defecto brindada por SonarCloud.
+
+#### Analisis de codigo para la aplicación frontend
+
+Los resultados obtenidos son los siguientes:
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app1.png" alt="SonarCloud aplicación frontend">
+</p>
+
+<p style="text-align: center;">
+  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
+</p>
+
+### Build (Node.js & npm)
+El proyecto se compila utilizando Node.js y npm.
+Se generan los artefactos de construcción que son necesarios para el despliegue.
+
+### GitHub Artifacts
+Los artefactos de construcción se suben a GitHub Artifacts.
+GitHub Artifacts almacena los archivos generados durante el proceso de construcción, que pueden ser utilizados en el proceso de despliegue.
+
+## CD (Entrega Continua)
+
+### Download Build Artifacts
+ Se descargan los artefactos de construcción desde GitHub Artifacts.
+
+### Amazon S3 
+La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependencias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
 
 ## Testing de microservicios 
 
@@ -343,79 +407,8 @@ Las siguientes imágenes mostrarán ejemplos de como se visualiza un proceso cor
   <img src="Extras/Imagenes/Testing-de-be/testing-correcto-shipping-service.png" alt="Testing correcto payments service">
 </p>
 
-### Build del microservicio
-
-Utilizando Maven.
-
-## Etapas de CD para BE
-### Push image ECR (Elastic Container Registry)
-
-Una vez empaquetado el microservicio en una imagen de Docker. La imagen se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
-
-Las imagen alojadas en este contenedor de imagenes, estan diferenciadas por sus etiquetas, el cual lleva el nombre del microservicio acompañado del nombre de la rama estable, que puede ser "prod" por production, "stg" por staging y "dev" por develop.
-
-Ejemplo: orders-service-develop, orders-service-stg, orders-service-prod
-
-En la imagen a continuación se ven todos los contenedores registrados para el ambiente develop:
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/BE/ecr-repository.png" alt="">
-</p>
-
-> Dato: Los nuevos contenedores que se registran obtienen la nueva etiqueta y los antiguos la pierden.
-
-### Deploy en ECS
-
-Para los servicios de backend se decidió usar Elastic Container Services, los mismos fueron desplegados en base a los ambientes que tenemos los cuales son dev, staging y prod. <br/>
-Las imagenes que anteriormente fueron subidas al repositorio de ECR, son luego actualizadas por el workflow de CI/CD en el task definition y en la revision de cada service. <br/>
-Luego de esto, el ALB se ocupa de verificar que cada task funcione correctamente con un health check, y de ser así despliega un target.
-
 <p style="text-align: center;">
   <img src="Extras/Imagenes/testing-correcto-alb.jpeg" alt="">
 </p>
-
-### Servicio serverless - API Gateway
-
-El ALB al ser interno, requiere de un API GW para poder conectarse a internet, por lo que agrega otra capa de seguridad.
-
-## Etapas de CI para FE
-### Analisis en SonarCloud (FE) 
-
-Para la aplicación frontend nuevamente utilizamos SonarCloud para el análisis de código estático. Tambien se utilzó la configuración por defecto brindada por SonarCloud.
-
-### Analisis de codigo para la aplicación frontend
-
-Los resultados obtenidos son los siguientes:
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app1.png" alt="SonarCloud aplicación frontend">
-</p>
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/Sonarcloud/Informes-de-fe/vue-app2.png" alt="SonarCloud aplicación frontend">
-</p>
-
-### Build de la aplicación
-
-Etapa de instalación de dependencias y posterior build de la aplicación. Antes de finalizar, se sube el compilado a un artifact de GitHub, el cual luego queda asociado al workflow y permite ser descargado para poder tener un control de las versiones.
-
-A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
-
-Creación del artefacto en ejecución:
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/FE/upload-build-artifacts.png" alt="">
-</p>
-
-Como se visualiza el artefacto generado:
-
-<p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/FE/build-artifacts.png" alt="">
-</p>
-
-## Etapas de CD para FE
-### Deploy S3 BUCKETS
-
-La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependencias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
 
 
