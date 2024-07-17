@@ -12,12 +12,13 @@ module "ecr" {
 
 // es necesario estar en uno de los workspaces que estan en la variable "environments"
 module "ecs" {
-  for_each      = local.current_env
-  source        = "./modules/ecs/"
-  prefix        = local.prefix
-  environment   = each.value.env
-  service_names = local.service_names
-  task_names    = local.task_names
+  for_each           = local.current_env
+  source             = "./modules/ecs/"
+  prefix             = local.prefix
+  environment        = each.value.env
+  service_names      = local.service_names
+  task_names         = local.task_names
+  api_paths          = local.api_paths
 }
 
 locals {
@@ -27,6 +28,7 @@ locals {
   prefix        = "aws-ecs"
   service_names = ["shipping-service", "payments-service", "products-service", "orders-service"]
   task_names    = ["shipping-task", "payments-task", "products-task", "orders-task"]
+  api_paths = ["shipping", "payments", "products", "orders"]
 
   environments = {
     dev  = { workspace = "ecs_dev_workspace", env = "dev" }

@@ -8,7 +8,6 @@ terraform workspace new ecs_dev_workspace
 terraform workspace new ecs_prod_workspace
 terraform workspace new ecs_stg_workspace
 
-
 ```
 
 - Comandos a llamar en orden: (te tienes que encontrar en ./terraform para poder llamar a los comandos)
