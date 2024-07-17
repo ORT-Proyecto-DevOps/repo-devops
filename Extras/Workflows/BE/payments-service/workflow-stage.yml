@@ -1,0 +1,30 @@
+name: Github Action Workflow STAGE
+
+on:
+  push:
+    branches:
+      - staging
+  repository_dispatch:
+    types:
+      - ci-cd-stg
+  workflow_dispatch:
+
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-cd-stg:
+    uses: ORT-Proyecto-DevOps/payments-service-example/.github/workflows/ci_cd_pipeline.yml@staging
+    with:
+      IMAGE_TAG: 'payments-service-staging'
+      BRANCH: 'staging'
+      ENV: 'stg'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      SONAR_TOKEN_PAYMENTS_SERVICE: ${{ secrets.SONAR_TOKEN_PAYMENTS_SERVICE }}
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
