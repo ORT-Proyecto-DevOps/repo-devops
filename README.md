@@ -109,6 +109,7 @@ A continuación damos una explicación breve de cada herramienta usada tanto par
 - AWS CLI: Para gestionar nuestros servicios de AWS por línea de comandos.
 - Elastic Container Repository (ECR): Para el almacenaje de imágenes Docker de los microservicios de backend.
 - Elastic Container Service (ECS): Como orquestador de contenedores Docker, manejando el escalado y la disponibilidad de nuestras aplicaciones.
+- API GW: Para crear APIs y enrutar solicitudes al ALB mediante internet.
 - S3 Buckets: Para el almacenamiento del código del aplicativo de frontend.
 
 ## IaC - Terraform 
@@ -116,7 +117,46 @@ A continuación damos una explicación breve de cada herramienta usada tanto par
 Toda la infrastructura es desplegada como IaC en Terraform.
 La misma está fragmentada por modulos y se diferencia su despliegue por workspaces.
 
-(ver si meter alguna imagen y redireccion a la carpeta terraform para mostrar algo desde el readme raiz)
+Estructura de directorios utilizada:
+
+```
+terraform/
+├── modules/
+│   ├── ecr/
+│   │   ├── ecr.tf
+│   │   └── outputs.tf
+│   ├── ecs/
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   └── s3_buckets/
+│       ├── main.tf
+│       └── outputs.tf
+├── main.tf
+├── outputs.tf
+├── providers.tf
+├── README.md
+└── variables.tf
+```
+
+A continuación enlistaremos la infrastructura desplegada por workspace: <br/>
+
+### Workspace s3_buckets_workspace:
+- 1 S3 Bucket para el aplicativo de frontend con configuraciones de policies y acceso publico.
+
+### Workspace ecr_workspace:
+- 1 ECR Repository para el almacenamiento de imagenes de los microservicios de backend.
+
+
+### Workspace ecs_env_workspace:
+Networking:
+- 1 VPC con 2 zonas de disponibilidad (us-east-1a - us-east-1b)
+- 1 Cluster
+- 4 Services (1 por microservicio)
+- 4 Tasks definition (1 por Service)
+- 1 ALB para distribuir la solicitud a la instancia del endpoint indicado.
+- 1 API GW para enrutar la solicitud al load balancer y para poder comunicarse por internet.
+
+Al estar manejando 3 ambientes, se hizo 1 workspace para cada ambiente estable, por lo que la palabra "env" es reemplazada por "dev", "stg" o "prod". <br/>
 
 ### Propuesta para microservicios BE
 
@@ -283,6 +323,6 @@ Como se visualiza el artefacto generado:
 ## Etapas de CD para FE
 ### Deploy S3 BUCKETS
 
-La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependecias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
+La aplicación frontend, luego de las etapas de análisis de código estático e instalación de dependencias y build del aplicativo, es desplegada en un S3 Bucket. Cada rama estable tiene su propio ambiente y su propio S3 Bucket (3 en total, 1 para main, 1 para staging y otro para develop).
 
 
