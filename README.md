@@ -96,7 +96,7 @@ Para el manejo de tareas usamos el tablero "Kanban" que GitHub presta, este tien
 A continuación damos una explicación breve de cada herramienta usada tanto para el aplicativo de FE como los microservicios de BE.
 
 - **GitHub**: Para alojar y versionar nuestro código en la nube, facilitando la colaboración y el control de cambios en el desarrollo.
-- **GitHub Actions**: Para automizar flujos de trabajo y para desencadenar la Pipeline de CI/CD empleada.
+- **GitHub Actions**: Para automatizar flujos de trabajo y para desencadenar la Pipeline de CI/CD empleada.
 - **SonarCloud**: Para analizar posibles vulnerabilidades en el codigo de los aplicativos.
 - **Docker**: Para la creación y mantenimiento de imágenes de los microservicios de backend.
 - **Maven**: Para la gestión de dependencias y la automatización de procesos de building en los microservicios de backend que usan Java.
@@ -147,7 +147,6 @@ A continuación enlistaremos la infrastructura desplegada por workspace: <br/>
 - 1 ECR Repository para el almacenamiento de imagenes de los microservicios de backend.
 
 ### Workspace "ecs_env_workspace":
-Networking:
 - 1 VPC con 2 zonas de disponibilidad (us-east-1a - us-east-1b)
 - 1 Cluster
 - 4 Services (1 por microservicio)
@@ -321,15 +320,11 @@ Testing/
 
 ## CD (Entrega Continua) para los microservicios
 ### Docker 
-El proyecto se empaqueta en una imagen de Docker.
-La imagen contiene todo lo necesario para ejecutar la aplicación, como el código, las dependencias y el entorno.
+cada microservicio se empaqueta en imagenes de Docker, se terminan generando 4 en total.
+La imagen contiene todo lo necesario para ejecutar los microservicios, como el código, las dependencias y el entorno.
 
-### ECR (Elastic Container Registry): 
-La imagen de Docker se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
-
-#### Push image ECR 
-
-Una vez empaquetado el microservicio en una imagen de Docker. La imagen se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
+#### Push image al ECR (Elastic Container Repository)
+Una vez empaquetado un microservicio en una imagen de Docker. La imagen se sube al repositorio de ECR en AWS, el cual gestiona el almacenamiento y la recuperación de imágenes de contenedores.
 
 Las imagen alojadas en este contenedor de imagenes, estan diferenciadas por sus etiquetas, el cual lleva el nombre del microservicio acompañado del nombre de la rama estable, que puede ser "prod" por production, "stg" por staging y "dev" por develop.
 
@@ -349,7 +344,6 @@ Las imagenes que anteriormente fueron subidas al repositorio de ECR, son luego a
 Luego de esto, el ALB se ocupa de verificar que cada task funcione correctamente con un health check, y de ser así despliega un target.
 
 ### Servicio serverless - API Gateway
-
 El load balancer al ser interno, requiere de un API GW para poder conectarse a internet, por lo que agrega otra capa de seguridad.
 
 ## Propuesta de CI/CD para aplicación FE
@@ -384,7 +378,6 @@ Los resultados obtenidos son los siguientes:
 Para el aplicativo de frontend, el resultado pasó los estándares de cálidad.
 
 ### Build (Node.js & npm)
-
 Es la etapa de instalación de dependencias y posterior build de la aplicación. El proyecto se compila utilizando Node.js y npm. Antes de finalizar, se sube el compilado a un artifact de GitHub, el cual luego queda asociado al workflow y permite ser descargado para poder tener un control de las versiones.
 
 A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
