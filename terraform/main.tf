@@ -36,7 +36,7 @@ locals {
     prod = { workspace = "ecs_prod_workspace", env = "prod" }
     }
 
-   # Determinar qué ambiente está activo basado en el workspace actual
+   # Determina qué ambiente está activo basado en el workspace actual
     current_env = {
     for key, value in local.environments :
     key => value
