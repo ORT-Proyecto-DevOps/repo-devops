@@ -19,6 +19,7 @@ terraform apply -auto-approve
 Siempre al iniciar una sesion nueva de AWS Academy actualizar las crendenciales en ~/.aws/credentials
 
 Si queremos eliminar los recursos usados en un Workspace hacemos:
+```
 terraform init
 terraform destroy
-
+```

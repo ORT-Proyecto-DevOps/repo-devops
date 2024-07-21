@@ -1,8 +1,8 @@
 locals {
   buckets = {
-    dev = "dev-vue-app1",
-    stg = "stg-vue-app1",
-    prd = "prd-vue-app1"
+    dev = "dev-vue-app-jj",
+    stg = "stg-vue-app1-jj",
+    prd = "prd-vue-app1-jj"
   }
 }
 

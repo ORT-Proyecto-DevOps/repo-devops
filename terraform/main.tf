@@ -1,4 +1,4 @@
-// es necesario estar en el workspace "ecr_workspace" <- terraform workspace select s3_buckets_workspace
+// es necesario estar en el workspace "s3_buckets_workspace" <- terraform workspace select s3_buckets_workspace
 module "s3_buckets" {
   source = "./modules/s3_buckets"
   count  = local.is_s3_buckets_workspace ? 1 : 0
