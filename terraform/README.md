@@ -23,3 +23,4 @@ Si queremos eliminar los recursos usados en un Workspace hacemos:
 terraform init
 terraform destroy
 ```
+Siempre al iniciar una sesion nueva de AWS Academy actualizar las crendenciales en ~/.aws/credentials
