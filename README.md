@@ -62,7 +62,7 @@ para adaptarse y prosperar en el futuro.
 ### Repositorios de Desarrollo (Gitflow)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas-flujos-integracion/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/CI-CD/Diagramas-flujos-integracion/Diagrama-Desarrollo.png" alt="Diagrama de flujo">
 </p>
 
 En estos repositorios almacenamos todo lo relacionado al desarrollo de los microservicios, en nuestro caso tenemos 1 repositorio por microservicio de BE (4 en total) y 1 para el aplicativo de FE.
@@ -73,7 +73,7 @@ Mantenemos 3 ramas estables (Main, Staging, Develop) y ramas temporales en caso 
 ### Repositorio de DevOps (Trunk Based)
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas-flujos-integracion/Diagrama-DevOps.png" alt="Diagrama de flujo">
+  <img src="Extras/Imagenes/CI-CD/Diagramas-flujos-integracion/Diagrama-DevOps.png" alt="Diagrama de flujo">
 </p>
 
 En este repositorio almacenamos todo lo relacionado a documentación relevante, infrastructura como codigo e imagenes relacionadas al CI/CD.
@@ -198,7 +198,7 @@ Workflows
 ## Propuesta de CI/CD para los microservicios BE
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaBE.png" alt="Diagrama de CICD">
+  <img src="Extras/Imagenes/CI-CD/Diagramas-CI-CD/DiagramaBE.png" alt="Diagrama de CI-CD">
 </p>
 
 ## CI (Integración Continua) para los microservicios
@@ -349,7 +349,7 @@ El load balancer al ser interno, requiere de un API GW para poder conectarse a i
 ## Propuesta de CI/CD para aplicación FE
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/Diagramas-CICD/DiagramaFE.png" alt="Diagrama de CICD">
+  <img src="Extras/Imagenes/CI-CD/Diagramas-CI-CD/DiagramaFE.png" alt="Diagrama de CICD">
 </p>
 
 ## CI (Integración Continua) para la aplicación Frontend
@@ -385,13 +385,13 @@ A su vez, este artifact es utilzado para el proceso de deploy en el S3 Bucket.
 Creación del artefacto en ejecución:
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/FE/upload-build-artifacts.png" alt="">
+  <img src="Extras/Imagenes/CI-CD/FE/upload-build-artifacts.png" alt="">
 </p>
 
 Como se visualiza el artefacto generado:
 
 <p style="text-align: center;">
-  <img src="Extras/Imagenes/CICD/FE/build-artifacts.png" alt="">
+  <img src="Extras/Imagenes/CI-CD/FE/build-artifacts.png" alt="">
 </p>
 
 ## CD (Entrega Continua) para la aplicación Frontend
